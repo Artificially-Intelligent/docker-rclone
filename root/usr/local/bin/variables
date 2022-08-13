@@ -1,6 +1,8 @@
 #!/usr/bin/with-contenv bash
 
-[[ -n "${POOLING_FS:-}" ]] && rclone_mountpoint="/cloud" || rclone_mountpoint="/data"
+fuse_mountpoint=${MERGED_DEST:-/mnt/data}
+local_mountpoint=${MERGED_SOURCE:-/mnt/local}
+[[ -n "${POOLING_FS:-}" ]] && rclone_mountpoint="$(dirname $fuse_mountpoint)/cloud" || rclone_mountpoint=${fuse_mountpoint}
 
 rclone_mount_basic_opts="
 --uid=${PUID:-911}
@@ -15,7 +17,7 @@ rclone_mount_basic_opts="
 "
 
 mfs_basic_opts="uid=${PUID:-911},gid=${PGID:-911},umask=022,allow_other"
-mfs_branches="/local=RW:/cloud=NC"
+mfs_branches=${MFS_BRANCHES:-${local_mountpoint}=RW:${rclone_mountpoint}=NC}
 
 ufs_basic_opts="uid=${PUID:-911},gid=${PGID:-911},umask=022,allow_other"
-ufs_branches="/local=RW:/cloud=RO"
+ufs_branches=${UFS_BRANCHES:-${local_mountpoint}=RW:${rclone_mountpoint}=RO}

@@ -1,4 +1,5 @@
 #!/bin/bash
+. /usr/local/bin/variables
 
 logf() {
     echo "$(date "$(printenv DATE_FORMAT)") MOVELO: $1"
@@ -11,7 +12,7 @@ if pidof -o %PPID -x "$(basename "$0")">/dev/null; then
 fi
 
 # Check if any files exist, if not exit
-file_ct=$(find /local -type f | wc -l)
+file_ct=$(find ${local_mountpoint} -type f | wc -l)
 if [ "$file_ct" = 0 ];then
     # logf "Nothing to move. Exiting."
     exit 3
@@ -24,7 +25,7 @@ humanReadableSize () {
 pSize=0
 pCount=0
 rclone_remote_path=$(printenv RCLONE_REMOTE_PATH | tr -d '"' | tr -d "'")
-prune_paths=$(find /local -name .nomove -printf "-path %h -o ")
+prune_paths=$(find ${local_mountpoint} -name .nomove -printf "-path %h -o ")
 
 # logf "###### Starting rclone move ######"
 
@@ -35,8 +36,8 @@ if [[ ${MOVE_LOCAL_AFTER_DAYS} =~ ^[0-9]+$ ]]; then
         if [ ! -f "$n" ]; then continue; fi
 
         # Find the pathname relative to the root of your remote and store filename
-        filename="$(echo "$n" | sed -e s@/local@@)"
-        destpath="$(dirname "$n" | sed -e s@/local@@)"
+        filename="$(echo "$n" | sed -e s@${local_mountpoint}@@)"
+        destpath="$(dirname "$n" | sed -e s@${local_mountpoint}@@)"
         basefile="$(basename "$n")"
 
         # Skip hidden or partial files.
@@ -53,8 +54,8 @@ if [[ ${MOVE_LOCAL_AFTER_DAYS} =~ ^[0-9]+$ ]]; then
 
         # If file is opened by another process, wait until it isn't.
         while [ "$(lsof "$n" >/dev/null 2>&1)" ] || \
-            [ "$(lsof "/local/${n}" >/dev/null 2>&1)" ] || \
-            [ "$(lsof "/data/${n}" >/dev/null 2>&1)" ]; do
+            [ "$(lsof "${local_mountpoint}/${n}" >/dev/null 2>&1)" ] || \
+            [ "$(lsof "${fuse_mountpoint}/${n}" >/dev/null 2>&1)" ]; do
             logf "File -> ${n} in use. Retrying in 10 seconds ..."
             sleep 10
         done
@@ -68,13 +69,13 @@ if [[ ${MOVE_LOCAL_AFTER_DAYS} =~ ^[0-9]+$ ]]; then
             pCount=$((pCount + 1))
             logf "+${MOVE_LOCAL_AFTER_DAYS}D $basefile ($(humanReadableSize $fileSize))"
         fi
-    done <<<$(find /local -type d \( $prune_paths -false \) -prune -o -type f -mtime +$MOVE_LOCAL_AFTER_DAYS -print)
+    done <<<$(find ${local_mountpoint} -type d \( $prune_paths -false \) -prune -o -type f -mtime +$MOVE_LOCAL_AFTER_DAYS -print)
 fi
 
 # then move exceed files
 if [[ ${MOVE_LOCAL_EXCEEDS_GB} =~ ^[0-9]+$ ]] && [[ ${MOVE_LOCAL_FREEUP_GB} =~ ^[0-9]+$ ]]; then
     maxSize=$(($MOVE_LOCAL_EXCEEDS_GB * 1000 * 1000 * 1000))
-    currentSize="$(du -sb /local | awk '{print $1}')"
+    currentSize="$(du -sb ${local_mountpoint} | awk '{print $1}')"
     if [ "$maxSize" -gt "$currentSize" ]; then
         # logf "Current size of $(($currentSize / 1000 / 1000 / 1000)) GB has not exceeded $MOVE_LOCAL_EXCEEDS_GB GB"
         :
@@ -93,8 +94,8 @@ if [[ ${MOVE_LOCAL_EXCEEDS_GB} =~ ^[0-9]+$ ]] && [[ ${MOVE_LOCAL_FREEUP_GB} =~ ^
             if [ ! -f "$n" ]; then continue; fi
 
             # Find the pathname relative to the rsoot of your remote and store filename
-            filename="$(echo "$n" | sed -e s@/local@@)"
-            destpath="$(dirname "$n" | sed -e s@/local@@)"
+            filename="$(echo "$n" | sed -e s@${local_mountpoint}@@)"
+            destpath="$(dirname "$n" | sed -e s@${local_mountpoint}@@)"
             basefile="$(basename "$n")"
 
             # Skip hidden or partial files.
@@ -111,8 +112,8 @@ if [[ ${MOVE_LOCAL_EXCEEDS_GB} =~ ^[0-9]+$ ]] && [[ ${MOVE_LOCAL_FREEUP_GB} =~ ^
 
             # If file is opened by another process, wait until it isn't.
             while [ "$(lsof "$n" >/dev/null 2>&1)" ] || \
-                [ "$(lsof "/local/${n}" >/dev/null 2>&1)" ] || \
-                [ "$(lsof "/data/${n}" >/dev/null 2>&1)" ]; do
+                [ "$(lsof "${local_mountpoint}/${n}" >/dev/null 2>&1)" ] || \
+                [ "$(lsof "${fuse_mountpoint}/${n}" >/dev/null 2>&1)" ]; do
                 logf "File -> ${n} in use. Retrying in 10 seconds ..."
                 sleep 10
             done
@@ -126,7 +127,7 @@ if [[ ${MOVE_LOCAL_EXCEEDS_GB} =~ ^[0-9]+$ ]] && [[ ${MOVE_LOCAL_FREEUP_GB} =~ ^
                 pCount=$((pCount + 1))
                 logf "+${MOVE_LOCAL_EXCEEDS_GB}GB $basefile ($(humanReadableSize $fileSize))"
             fi
-        done <<<$(find /local -type d \( $prune_paths -false \) -prune -o -type f -print0 | xargs -0 --no-run-if-empty stat --format '%Y :%y %n' | sort -n | cut -d: -f2- | awk '{$1=$2=$3=""; print $0}')
+        done <<<$(find ${local_mountpoint} -type d \( $prune_paths -false \) -prune -o -type f -print0 | xargs -0 --no-run-if-empty stat --format '%Y :%y %n' | sort -n | cut -d: -f2- | awk '{$1=$2=$3=""; print $0}')
     fi
 fi
 
@@ -138,8 +139,8 @@ if [ "${MOVE_LOCAL_ALL}" == "true" ]; then
         if [ ! -f "$n" ]; then continue; fi
 
         # Find the pathname relative to the root of your remote and store filename
-        filename="$(echo "$n" | sed -e s@/local@@)"
-        destpath="$(dirname "$n" | sed -e s@/local@@)"
+        filename="$(echo "$n" | sed -e s@${local_mountpoint}@@)"
+        destpath="$(dirname "$n" | sed -e s@${local_mountpoint}@@)"
         basefile="$(basename "$n")"
 
         # Skip hidden or partial files.
@@ -156,8 +157,8 @@ if [ "${MOVE_LOCAL_ALL}" == "true" ]; then
 
         # If file is opened by another process, wait until it isn't.
         while [ "$(lsof "$n" >/dev/null 2>&1)" ] || \
-            [ "$(lsof "/local/${n}" >/dev/null 2>&1)" ] || \
-            [ "$(lsof "/data/${n}" >/dev/null 2>&1)" ]; do
+            [ "$(lsof "${local_mountpoint}/${n}" >/dev/null 2>&1)" ] || \
+            [ "$(lsof "${fuse_mountpoint}/${n}" >/dev/null 2>&1)" ]; do
             logf "File -> ${n} in use. Retrying in 10 seconds ..."
             sleep 10
         done
@@ -171,12 +172,12 @@ if [ "${MOVE_LOCAL_ALL}" == "true" ]; then
             pCount=$((pCount + 1))
             logf "$basefile ($(humanReadableSize $fileSize))"
         fi
-    done <<<$(find /local -type d \( $prune_paths -false \) -prune -o -type f -print)
+    done <<<$(find ${local_mountpoint} -type d \( $prune_paths -false \) -prune -o -type f -print)
 fi
 
 # cleanup
 if [ "$(printenv KEEP_EMPTY_DIRS)" -eq "0" ]; then
-    find /local -mindepth 1 -type d -empty -delete
+    find ${local_mountpoint} -mindepth 1 -type d -empty -delete
 fi
 
 # final report

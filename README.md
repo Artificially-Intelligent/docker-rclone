@@ -21,8 +21,7 @@ services:
       - ${DOCKER_ROOT}/rclone/config:/config
       - ${DOCKER_ROOT}/rclone/log:/log
       - ${DOCKER_ROOT}/rclone/cache:/cache
-      - /your/mounting/point:/data:shared
-      - /local/dir/to/be/merged/with:/local     # Optional: if you have a folder to be mergerfs/unionfs with
+      - /your/mounting/points/parent/directory:/mnt:shared
     devices:
       - /dev/fuse
     cap_add:
@@ -32,8 +31,9 @@ services:
     environment:
       - PUID=${PUID}
       - PGID=${PGID}
-      - TZ=Asia/Seoul
+      - TZ=Australia/Melbourne
       - RCLONE_REMOTE_PATH=remote_name:path/to/mount
+      - MERGED_DEST=/mnt/data
 ```
 
 equivalently,
@@ -47,12 +47,12 @@ docker run -d \
     -v ${DOCKER_ROOT}/rclone/config:/config \
     -v ${DOCKER_ROOT}/rclone/log:/log \
     -v ${DOCKER_ROOT}/rclone/cache:/cache \
-    -v /your/mounting/point:/data:shared \
-    -v /local/dir/to/be/merged/with:/local \
+    -v /your/mounting/points/parent/directory:/mnt:shared \
     -e PUID=${PUID} \
     -e PGID=${PGID} \
-    -e TZ=Asia/Seoul \
+    -e TZ=Australia/Melbourne \
     -e RCLONE_REMOTE_PATH=remote_name:path/to/mount \
+    -e MERGED_DEST=/mnt/data \
     wiserain/rclone
 ```
 
@@ -105,8 +105,7 @@ Along with the rclone folder, you can specify one local directory to be mergerfs
 ```bash
 mergerfs \
     -o uid=${PUID:-911},gid=${PGID:-911},umask=022,allow_other \
-    -o ${MFS_USER_OPTS} \
-    /local=RW:/cloud=NC /data
+    -o ${MFS_USER_OPTS} ${MFS_BRANCHES} ${MERGED_DEST}
 ```
 
 where a default value of ```MFS_USER_OPTS``` is
@@ -115,13 +114,18 @@ where a default value of ```MFS_USER_OPTS``` is
 MFS_USER_OPTS="rw,use_ino,func.getattr=newest,category.action=all,category.create=ff,cache.files=auto-full,dropcacheonclose=true"
 ```
 
+and a default value of ```MFS_BRANCHES``` is
+```bash
+MFS_BRANCHES="/mnt/local=RW:/mnt/cloud=NC"
+```
+
+
 If you want unionfs instead of mergerfs, set ```POOLING_FS=unionfs```, which will apply
 
 ```bash
 unionfs \
     -o uid=${PUID:-911},gid=${PGID:-911},umask=022,allow_other \
-    -o ${UFS_USER_OPTS} \
-    /local=RW:/cloud=RO /data
+    -o ${UFS_USER_OPTS} ${UFS_BRANCHES} ${MERGED_DEST}
 ```
 
 where a default value of ```UFS_USER_OPTS``` is
@@ -130,13 +134,19 @@ where a default value of ```UFS_USER_OPTS``` is
 UFS_USER_OPTS="cow,direct_io,nonempty,auto_cache,sync_read"
 ```
 
+and a default value of ```UFS_BRANCHES``` is
+
+```bash
+UFS_BRANCHES="/mnt/local=RW:/mnt/cloud=RO"
+```
+
 ### Built-in scripts
 
-Two scripts performing basic rclone operations such as copy and move between ```/local``` and ```/cloud``` are prepared for your conveinence. Since they are from local to cloud directories, it is meaningful only when you mount an additional ```/local``` directory.
+Two scripts performing basic rclone operations such as copy and move between ```/mnt/local``` and ```/mnt/cloud``` are prepared for your conveinence. Since they are from local to cloud directories, it is meaningful only when you mount an additional ```/mnt/local``` directory.
 
 #### copy_local
 
-You can make a copy of files in ```/local``` to ```/cloud``` by
+You can make a copy of files in ```/mnt/local``` to ```/mnt/cloud``` by
 
 ```bash
 docker exec -it <container name or sha1, e.g. rclone> copy_local
@@ -146,7 +156,7 @@ If you want to exclude a certain folder from copy, just put an empty ```.nocopy`
 
 #### move_local
 
-In contrast to ```copy_local```, ```move_local``` consists of three consecutive sub-operations. First, it will move old files. If ```MOVE_LOCAL_AFTER_DAYS``` is set, files older than that days will be moved. Then, it will move files exceed size of ```MOVE_LOCAL_EXCEEDS_GB``` by the amount of ```MOVE_LOCAL_FREEUP_GB```. Finally, it will move the rest of files in ```/local``` only if ```MOVE_LOCAL_ALL=true```. The command and the way to exclude subfolders are almost the same as for ```copy_local```.
+In contrast to ```copy_local```, ```move_local``` consists of three consecutive sub-operations. First, it will move old files. If ```MOVE_LOCAL_AFTER_DAYS``` is set, files older than that days will be moved. Then, it will move files exceed size of ```MOVE_LOCAL_EXCEEDS_GB``` by the amount of ```MOVE_LOCAL_FREEUP_GB```. Finally, it will move the rest of files in ```/mnt/local``` only if ```MOVE_LOCAL_ALL=true```. The command and the way to exclude subfolders are almost the same as for ```copy_local```.
 
 #### cron - disabled by default
 
@@ -159,4 +169,5 @@ After making sure that a single execution of scripts is okay, you can add cron j
 
 ## Credit
 
+- [docker-rclone](https://github.com/wiserain/docker-rclone)
 - [cloud-media-scripts](https://github.com/madslundt/docker-cloud-media-scripts)

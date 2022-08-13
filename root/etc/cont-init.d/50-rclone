@@ -39,5 +39,5 @@ done
 
 # permissions
 chown -R abc:abc \
-    /config /log /cloud /data
-chown abc:abc /cache /local
+    /config /log # ${fuse_mountpoint} ${rclone_mountpoint}
+chown abc:abc /cache ${local_mountpoint}
