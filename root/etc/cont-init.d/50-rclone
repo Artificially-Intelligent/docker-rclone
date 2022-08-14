@@ -1,6 +1,8 @@
 #!/usr/bin/with-contenv bash
 . /usr/local/bin/variables
 
+sleep 10
+
 if [[ -z $RCLONE_REMOTE_PATH ]]; then
     echo "*** RCLONE_REMOTE_PATH not set. Exiting..."
     exit 1
