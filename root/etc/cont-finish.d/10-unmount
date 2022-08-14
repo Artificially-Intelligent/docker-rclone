@@ -1,7 +1,11 @@
 #!/usr/bin/with-contenv bash
 . /usr/local/bin/variables
 
-unmount() { if findmnt "$1" | grep -q fuse; then fusermount -uz "$1" ; fi }
+unmount() { 
+    if findmnt "$1" | grep -q fuse; then 
+        echo "unmounting $1" 
+        fusermount -uz "$1"
+    fi }
 
 # unmount fuse
 unmount ${fuse_mountpoint}
