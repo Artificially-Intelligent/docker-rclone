@@ -41,8 +41,12 @@ done
 
 # permissions
 chown -R abc:abc /config /log
-chown abc:abc /cache 
-[ -d ${local_mountpoint} ] && chown abc:abc ${local_mountpoint}
+chown abc:abc /cache
+if [[ -d ${local_mountpoint} ]]; then
+    echo "*** changing owner recursively for ${local_mountpoint}"
+    chown abc:abc "${local_mountpoint}"
+fi
+
 # fuse_mountpoint and rclone_mountpoint permission changes removed but left as comments in case they are needed for helper scripts to run properly.
 # [ -d ${fuse_mountpoint} ] && chown -R abc:abc ${fuse_mountpoint}
 # [ -d ${rclone_mountpoint} ] && chown -R abc:abc ${rclone_mountpoint}
