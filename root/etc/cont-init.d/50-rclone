@@ -38,6 +38,8 @@ while findmnt "${rclone_mountpoint}" | grep -q fuse.rclone; do
 done
 
 # permissions
-chown -R abc:abc \
-    /config /log # ${fuse_mountpoint} ${rclone_mountpoint}
-chown abc:abc /cache ${local_mountpoint}
+chown -R abc:abc /config /log
+chown abc:abc /cache 
+[ -d ${local_mountpoint} ] && chown abc:abc ${local_mountpoint}
+# [ -d ${fuse_mountpoint} ] && chown abc:abc ${fuse_mountpoint}
+# [ -d ${rclone_mountpoint} ] && chown abc:abc ${rclone_mountpoint}
