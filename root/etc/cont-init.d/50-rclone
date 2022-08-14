@@ -42,6 +42,8 @@ done
 # permissions
 chown -R abc:abc /config /log
 chown abc:abc /cache 
-[ -d ${local_mountpoint} ] && chown abc:abc ${local_mountpoint}
+# [ -d ${local_mountpoint} ] && chown abc:abc ${local_mountpoint}
 # [ -d ${fuse_mountpoint} ] && chown abc:abc ${fuse_mountpoint}
 # [ -d ${rclone_mountpoint} ] && chown abc:abc ${rclone_mountpoint}
+
+echo "*** rclone mount prechecks (50-rclone) complete"
