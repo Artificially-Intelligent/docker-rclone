@@ -2,17 +2,13 @@
 . /usr/local/bin/variables
 
 if [ $(findmnt ${rclone_mountpoint} | grep fuse | wc -l) -ne 1 ]; then
+    echo "mount ${rclone_mountpoint} should only appear once but was found $(findmnt ${rclone_mountpoint} | grep fuse | wc -l) instead"
     exit 1
 fi
 
-if [ "$poolingfs" == "mergerfs" ]; then
-    if [ $(findmnt ${fuse_mountpoint} | grep fuse.mergerfs | wc -l) -ne 1 ]; then
-        exit 1
-    fi
-fi
-
-if [ "$poolingfs" == "unionfs" ]; then
-    if [ $(findmnt ${fuse_mountpoint} | grep fuse.unionfs | wc -l) -ne 1 ]; then
+if [ "$poolingfs" == "mergerfs" ] || [ "$poolingfs" == "unionfs" ]; then
+    if [ $(findmnt ${fuse_mountpoint} | grep fuse.${poolingfs} | wc -l) -ne 1 ]; then
+        echo "mount ${fuse_mountpoint} should only appear once but was found $(findmnt ${fuse_mountpoint} | grep fuse | wc -l) instead"
         exit 1
     fi
 fi
