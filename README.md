@@ -14,7 +14,7 @@ version: '3'
 services:
   rclone:
     container_name: rclone
-    image: wiserain/rclone
+    image: slink42/rclone
     restart: always
     network_mode: "bridge"
     volumes:
@@ -53,7 +53,7 @@ docker run -d \
     -e TZ=Australia/Melbourne \
     -e RCLONE_REMOTE_PATH=remote_name:path/to/mount \
     -e MERGED_DEST=/mnt/data \
-    wiserain/rclone
+    slink42/rclone
 ```
 
 First, you need to prepare an rclone configuration file in ```/config/rclone.conf```. It can be done manually (copy yourself) or by running a built-in script below
