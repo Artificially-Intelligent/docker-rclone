@@ -8,7 +8,7 @@ if ! [ -z "$pd_mountpoint" ]; then
     if ! [ -z "$plexdrive_rclone_remote" ]; then
         echo "Overwriting json config files in /config using rclone remote: $plexdrive_rclone_remote"
         . /usr/local/bin/plexdrive_setup_from_rclone
-    done
+    fi
 
     while [ ! -f "/config/config.json" ] || [ ! -f "/config/token.json" ]; do
         echo "Waiting for config files in /config. Retrying in 30s ..."
