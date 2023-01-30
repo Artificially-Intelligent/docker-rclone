@@ -1,6 +1,7 @@
 #!/usr/bin/with-contenv bash
 . /usr/local/bin/variables
 
+# rclone healthchecks
 if [ $(findmnt ${rclone_mountpoint} | grep fuse.rclone | wc -l) -ne 1 ]; then
     echo "mount ${rclone_mountpoint} should only appear once but was found $(findmnt ${rclone_mountpoint} | grep fuse.rclone | wc -l) instead"
     exit 1
@@ -8,8 +9,24 @@ fi
 
 if [ "$poolingfs" == "mergerfs" ] || [ "$poolingfs" == "unionfs" ]; then
     if [ $(findmnt ${fuse_mountpoint} | grep fuse.${poolingfs} | wc -l) -ne 1 ]; then
-        echo "mount ${fuse_mountpoint} should only appear onne but was found $(findmnt ${fuse_mountpoint} | grep fuse.${poolingfs} | wc -l) times instead"
+        echo "mount ${fuse_mountpoint} should only appear once but was found $(findmnt ${fuse_mountpoint} | grep fuse.${poolingfs} | wc -l) times instead"
         exit 1
+    fi
+fi
+
+
+# plexdrive healthchecks
+if ! [ -z "$pd_mountpoint" ]; then
+
+    if [ $(findmnt ${pd_mountpoint} | grep fuse | wc -l) -ne 1 ]; then
+        exit 1
+    fi
+
+    if [ "$poolingfs" == "mergerfs" ] || [ "$poolingfs" == "unionfs" ]; then
+        if [ $(findmnt ${pd_mountpoint} | grep fuse.${poolingfs} | wc -l) -ne 1 ]; then
+            echo "mount ${pd_mountpoint} should only appear once but was found $(findmnt ${pd_mountpoint} | grep fuse.${poolingfs} | wc -l) times instead"
+            exit 1
+        fi
     fi
 fi
 

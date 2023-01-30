@@ -22,7 +22,7 @@ fi
 if [ "$POOLING_FS" = "unionfs" ]; then
     IFS=" " read -r -a ufs_user_opts <<< "$UFS_USER_OPTS"
 
-    mount_command="unionfs ${ufs_branches} ${fuse_mountpoint}-o ${ufs_basic_opts} -o ${ufs_user_opts}"
+    mount_command="unionfs ${ufs_branches} ${fuse_mountpoint} -o ${ufs_basic_opts} -o ${ufs_user_opts}"
     echo "*** pooling => $mount_command"
     exec $mount_command
 fi

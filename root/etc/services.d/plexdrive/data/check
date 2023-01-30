@@ -1,0 +1,10 @@
+#!/usr/bin/with-contenv bash
+. /usr/local/bin/variables
+
+if ! [ -z "$pd_mountpoint" ]; then
+    if ! findmnt $pd_mountpoint | grep -q fuse; then
+        exit 1
+    fi
+fi
+
+exit 0

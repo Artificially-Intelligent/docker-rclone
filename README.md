@@ -34,6 +34,7 @@ services:
       - TZ=Australia/Melbourne
       - RCLONE_REMOTE_PATH=remote_name:path/to/mount
       - MERGED_DEST=/mnt/data
+      - PLEXDRIVE_REMOTE=plexdrive_remote_name
 ```
 
 equivalently,
@@ -53,6 +54,7 @@ docker run -d \
     -e TZ=Australia/Melbourne \
     -e RCLONE_REMOTE_PATH=remote_name:path/to/mount \
     -e MERGED_DEST=/mnt/data \
+    -e PLEXDRIVE_REMOTE=plexdrive_remote_name \
     slink42/rclone
 ```
 
