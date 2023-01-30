@@ -100,6 +100,27 @@ Please note that variables only with capital letters are configurable by environ
 | ```RCLONE_LOG_FILE```  | to redirect logging to file  |   |
 | ```RCLONE_MOUNT_USER_OPTS```  | additioanl arguments will be appended to the basic options in the above command  |   |
 
+## [plexdrive](https://github.com/plexdrive/plexdrive) mount (optional)
+
+In additon to setting up an rclone mount, a plexdrive mount can be configured. This only occours when both plexdrive config files are found at /config/config.json and /config/token.json or the envrionment variable PLEXDRIVE_REMOTE is set. When PLEXDRIVE_REMOTE is supplied, the rclone remote matching the name of the variable value is used to generate the plexdrive config files. Internally, it will execute the following command to mount plexdrive:
+
+```bash
+plexdrive \
+  mount ${pd_mountpoint} $(echo $pd_basic_opts) ${pd_user_opts[@]}
+```
+
+using the defaults this would equate to:
+
+```bash
+plexdrive \
+  mount /mnt/plexdrive \
+    --config /config/ \
+    --uid=${PUID:-911} \
+    --gid=${PGID:-911} \
+    --umask=0100775 \
+    -o allow_other
+```
+
 ## [mergerfs](https://github.com/trapexit/mergerfs) or unionfs (optional)
 
 Along with the rclone folder, you can specify one local directory to be mergerfs with by ```POOLING_FS=mergerfs```. Internally, it will execute a following command
@@ -172,4 +193,5 @@ After making sure that a single execution of scripts is okay, you can add cron j
 ## Credit
 
 - [docker-rclone](https://github.com/wiserain/docker-rclone)
+- [docker-plexdrive](https://github.com/wiserain/docker-plexdrive)
 - [cloud-media-scripts](https://github.com/madslundt/docker-cloud-media-scripts)
