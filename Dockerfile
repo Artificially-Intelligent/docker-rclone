@@ -1,6 +1,7 @@
 ARG UBUNTU_VER=20.04
 
-ARG UBUNTU_VER_SHA=@sha256:6cad3b09aa963b47380bbf0053980f22d27bb4b575ff5b171bb9c00a239ad018
+## Use hard coded ubuntu version when build failing failures due to upstream dependency changes
+#ARG UBUNTU_VER_SHA=@sha256:6cad3b09aa963b47380bbf0053980f22d27bb4b575ff5b171bb9c00a239ad018
 FROM ubuntu:${UBUNTU_VER} AS ubuntu
 FROM ghcr.io/by275/base:ubuntu${UBUNTU_VER}${UBUNTU_VER_SHA} AS prebuilt
 
