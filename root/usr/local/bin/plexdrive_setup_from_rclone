@@ -1,0 +1,59 @@
+#!/usr/bin/with-contenv bash
+. /usr/local/bin/variables
+
+
+# Reconnect to rclone remote, revert rclone config to master copy if unable to connect
+function plexdrive_config_from_rclone(){
+    # authorize rclone gdrive mount
+    RCLONE_REMOTE=$1
+    RCLONE_CONFIG_FILE=${2:-"/config/rclone.conf"}
+    PLEXDRIVE_FOLDER=${3:-"/config"}
+
+    PLEXDRIVE_CONFIG_FOLDER="$PLEXDRIVE_FOLDER"
+
+    ENV_FILE=${4:-$ENV_FILE}
+
+    ## copy gdrive mount tokens to plexdrive
+    echo "copying rclone token to plexdrive"
+    mkdir -p "${PLEXDRIVE_CONFIG_FOLDER}"
+
+    # read config from file
+    RCLONE_CONFIG_OUPUT=$(rclone config  --config "$RCLONE_CONFIG_FILE" show ${RCLONE_REMOTE})
+
+    # update plexdrive token.json
+    RCLONE_TOKEN=$(echo "$RCLONE_CONFIG_OUPUT" | grep token)
+    # trim to value only
+    RCLONE_TOKEN=${RCLONE_TOKEN/token = /}
+    [[ -z "$RCLONE_TOKEN" ]] && echo "error: rclone token for gdrive not found in rclone.conf" && exit 1 \
+        || echo "$RCLONE_TOKEN" > "${PLEXDRIVE_CONFIG_FOLDER}/token.json"
+
+
+    # update plexdrive config.json
+    RCLONE_CLIENTID=$(echo "$RCLONE_CONFIG_OUPUT" | grep client_id)
+    RCLONE_CLIENTID=${RCLONE_CLIENTID/client_id = /}
+
+    RCLONE_SECRET=$(echo "$RCLONE_CONFIG_OUPUT" | grep client_secret)
+    RCLONE_SECRET=${RCLONE_SECRET/client_secret = /}
+
+    if [[ -z "$RCLONE_CLIENTID" ]] || [[ -z "$RCLONE_SECRET" ]]; then
+        echo "error: rclone token for gdrive not found in rclone.conf"
+        exit 1
+    else
+        echo "{\"ClientID\":\"$RCLONE_CLIENTID\",\"ClientSecret\":\"$RCLONE_SECRET\"}" > "$PLEXDRIVE_CONFIG_FOLDER/config.json"
+    fi
+
+    # update plexdrive team_drive.id
+    RCLONE_TEAMDRIVE=$(echo "$RCLONE_CONFIG_OUPUT" | grep team_drive)
+    RCLONE_TEAMDRIVE=${RCLONE_TEAMDRIVE/team_drive = /}
+    [[ -z "$RCLONE_TEAMDRIVE" ]] && echo "warning: rclone teamdrive id not found in rclone.conf for remote: ${RCLONE_REMOTE}" \
+        || echo "$RCLONE_TEAMDRIVE" > "$PLEXDRIVE_CONFIG_FOLDER/team_drive.id"
+}
+
+
+echo "
+==============================================================
+Setup Plexdrive using rclone remote: ${plexdrive_rclone_remote}
+==============================================================
+"
+plexdrive_config_from_rclone "${plexdrive_rclone_remote}" "/config/rclone.conf" "/config"
+exit 0
