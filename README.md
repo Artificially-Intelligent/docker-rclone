@@ -98,7 +98,7 @@ Please note that variables only with capital letters are configurable by environ
 | ```RCLONE_CONFIG```  | path to ```rclone.conf```  |  ```/config/rclone.conf``` |
 | ```RCLONE_LOG_LEVEL```  | log level for rclone runtime  | ```NOTICE```  |
 | ```RCLONE_LOG_FILE```  | to redirect logging to file  |   |
-| ```RCLONE_MOUNT_USER_OPTS```  | additioanl arguments will be appended to the basic options in the above command  |   |
+| ```RCLONE_MOUNT_USER_OPTS```  | additional arguments will be appended to the basic options in the above command  |   |
 
 ## [plexdrive](https://github.com/plexdrive/plexdrive) mount (optional)
 
@@ -120,6 +120,14 @@ plexdrive \
     --umask=0100775 \
     -o allow_other
 ```
+
+Please note that variables only with capital letters are configurable by environment variables.
+
+| ENV  | Description  | Default  |
+|---|---|---|
+| ```PLEXDRIVE_REMOTE```  | this should be in ```rclone.conf```. If defined token, client_id, client_secret and team_drive will be read from remote and used to overwrite any existing plexdrive config files: /config/config.json, /config/token.json and /config/team_drive.id  |   |
+| ```PLEXDRIVE_MOUNT```  | path where plexdrive remote is mounted to. | ```/mnt/plexdrive``` |
+| ```PLEXDRIVE_MOUNT_USER_OPTS```  | additional arguments will be appended to the basic options in the above command  |   |
 
 ## [mergerfs](https://github.com/trapexit/mergerfs) or unionfs (optional)
 

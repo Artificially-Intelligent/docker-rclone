@@ -1,10 +1,13 @@
 #!/usr/bin/with-contenv bash
 
-# rclone variables
+## rclone variables
 
 fuse_mountpoint=${MERGED_DEST:-/mnt/data}
 local_mountpoint=${MERGED_SOURCE:-/mnt/local}
-[[ -n "${POOLING_FS:-}" ]] && rclone_mountpoint="$(dirname $fuse_mountpoint)/cloud" || rclone_mountpoint=${fuse_mountpoint}
+
+# if pooling fs in use mount rclone to its own mountpoint, otherwise mount to destination path defined by ${fuse_mountpoint}
+[[ -n "${POOLING_FS:-}" ]] && rclone_mountpoint=${RCLONE_MOUNT:-"$(dirname $fuse_mountpoint)/rclone"} \
+    || rclone_mountpoint=${fuse_mountpoint}
 
 rclone_mount_basic_opts="
 --uid=${PUID:-911}
@@ -25,17 +28,18 @@ ufs_basic_opts="uid=${PUID:-911},gid=${PGID:-911},umask=022,allow_other"
 ufs_branches=${UFS_BRANCHES:-${local_mountpoint}=RW:${rclone_mountpoint}=RO}
 
 
+## plexdrive variables
 
-# plexdrive variables
-
-
+# If plexdrive config is definined setup plexdrive for use, otherwise leave disabled.
+# Note: Variable pd_mountpoint is used elsewhere in code to check if plexdrive is in use. 
 if ([ -f "/config/config.json" ] && [ -f "/config/token.json" ]) || ! [ -z "$PLEXDRIVE_REMOTE" ]; then
 
     plexdrive_rclone_remote=${PLEXDRIVE_REMOTE:-""}
 
     #[[ -n "${POOLING_FS:-}" ]] && pd_mountpoint="/cloud" || pd_mountpoint="/data"
-    pd_mountpoint="$(dirname $fuse_mountpoint)/plexdrive"
+    pd_mountpoint=${PLEXDRIVE_MOUNT:-"$(dirname $fuse_mountpoint)/plexdrive"}
 
+    
     pd_basic_opts="
     --config /config/
     --uid=${PUID:-911}
@@ -43,4 +47,13 @@ if ([ -f "/config/config.json" ] && [ -f "/config/token.json" ]) || ! [ -z "$PLE
     --umask=0100775
     -o allow_other
     "
+
+    if ! [ -z "$PLEXDRIVE_MOUNT_USER_OPTS" ]; then
+        pd_basic_opts="${pd_basic_opts}
+            ${PLEXDRIVE_MOUNT_USER_OPTS}
+        "
+        echo "PLEXDRIVE_MOUNT_USER_OPTS set. Appended user additional arguments to appended to the basic options. Resulting plexdrive options:"
+        echo "${pd_basic_opts}"
+    fi
+    
 fi
