@@ -118,7 +118,8 @@ plexdrive \
     --uid=${PUID:-911} \
     --gid=${PGID:-911} \
     --umask=0100775 \
-    -o allow_other
+    -o allow_other \
+    ${PLEXDRIVE_MOUNT_USER_OPTS}
 ```
 
 Please note that variables only with capital letters are configurable by environment variables.

@@ -52,8 +52,6 @@ if ([ -f "/config/config.json" ] && [ -f "/config/token.json" ]) || ! [ -z "$PLE
         pd_basic_opts="${pd_basic_opts}
             ${PLEXDRIVE_MOUNT_USER_OPTS}
         "
-        echo "PLEXDRIVE_MOUNT_USER_OPTS set. Appended user additional arguments to appended to the basic options. Resulting plexdrive options:"
-        echo "${pd_basic_opts}"
     fi
     
 fi
