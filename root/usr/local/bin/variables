@@ -31,7 +31,7 @@ ufs_branches=${UFS_BRANCHES:-${local_mountpoint}=RW:${rclone_mountpoint}=RO}
 
 if ([ -f "/config/config.json" ] && [ -f "/config/token.json" ]) || ! [ -z "$PLEXDRIVE_REMOTE" ]; then
 
-plexdrive_rclone_remote=${PLEXDRIVE_REMOTE:-""}
+    plexdrive_rclone_remote=${PLEXDRIVE_REMOTE:-""}
 
     #[[ -n "${POOLING_FS:-}" ]] && pd_mountpoint="/cloud" || pd_mountpoint="/data"
     pd_mountpoint="$(dirname $fuse_mountpoint)/plexdrive"

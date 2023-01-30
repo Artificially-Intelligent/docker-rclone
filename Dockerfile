@@ -11,6 +11,8 @@ FROM ubuntu AS builder
 
 ARG RCLONE_TYPE="latest"
 ARG DEBIAN_FRONTEND="noninteractive"
+ARG TARGETARCH
+ARG PLEXDRIVE_VER="5.2.1"
 
 # add go-cron
 COPY --from=prebuilt /go/bin/go-cron /bar/usr/local/bin/
@@ -28,7 +30,14 @@ RUN \
     elif [ "${RCLONE_TYPE}" = "mod" ]; then \
         rclone_install_script_url="https://raw.githubusercontent.com/wiserain/rclone/mod/install.sh"; fi && \
     curl -fsSL $rclone_install_script_url | bash && \
-    mv /usr/bin/rclone /bar/usr/bin/rclone
+    mv /usr/bin/rclone /bar/usr/bin/rclone && \
+    echo "**** add plexdrive ****" && \
+    PLEXDRIVE_ARCH=$(if [ "$TARGETARCH" = "arm" ]; then echo "arm7"; else echo "$TARGETARCH"; fi) && \
+    curl -o /bar/usr/local/bin/plexdrive -LJ https://github.com/plexdrive/plexdrive/releases/download/${PLEXDRIVE_VER}/plexdrive-linux-${PLEXDRIVE_ARCH}
+
+
+# build artifacts root
+RUN mkdir -p /bar/usr/local/bin
 
 # add local files
 COPY root/ /bar/
