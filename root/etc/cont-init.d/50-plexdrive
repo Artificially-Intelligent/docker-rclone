@@ -5,7 +5,7 @@
 # plexdrive healthchecks
 if ! [ -z "$pd_mountpoint" ]; then
     echo "*** checking config"
-    if ! [ -z "$plexdrive_rclone_remote" ]; do
+    if ! [ -z "$plexdrive_rclone_remote" ]; then
         echo "Overwriting json config files in /config using rclone remote: $plexdrive_rclone_remote"
         . /usr/local/bin/plexdrive_setup_from_rclone
     done
