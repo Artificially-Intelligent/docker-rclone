@@ -6,12 +6,12 @@
 if ! [ -z "$pd_mountpoint" ]; then
     echo "*** checking config"
     if ! [ -z "$plexdrive_rclone_remote" ]; then
-        echo "Overwriting json config files in /config using rclone remote: $plexdrive_rclone_remote"
+        echo "Overwriting json config files in ${plexdrive_config_folder} using rclone remote: $plexdrive_rclone_remote"
         . /usr/local/bin/plexdrive_setup_from_rclone
     fi
 
-    while [ ! -f "/config/config.json" ] || [ ! -f "/config/token.json" ]; do
-        echo "Waiting for config files in /config. Retrying in 30s ..."
+    while [ ! -f "${plexdrive_config_folder}/config.json" ] || [ ! -f "${plexdrive_config_folder}/token.json" ]; do
+        echo "Waiting for config files in ${plexdrive_config_folder}. Retrying in 30s ..."
         echo "RUN: docker exec -it <CONTAINER_NAME> plexdrive_setup"
         echo "or set the name of a rclone remote to copy config from to environment variable: PLEXDRIVE_REMOTE"
         sleep 30
@@ -27,7 +27,7 @@ if ! [ -z "$pd_mountpoint" ]; then
 
     # permissions
     chown -R abc:abc \
-        /config "${pd_mountpoint}" /cache
+        "${plexdrive_config_folder}" "${pd_mountpoint}" /cache
     chown abc:abc /local
 
     # display version

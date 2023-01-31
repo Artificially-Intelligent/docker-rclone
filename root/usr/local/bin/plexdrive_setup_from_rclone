@@ -6,10 +6,8 @@
 function plexdrive_config_from_rclone(){
     # authorize rclone gdrive mount
     RCLONE_REMOTE=$1
-    RCLONE_CONFIG_FILE=${2:-"/config/rclone.conf"}
-    PLEXDRIVE_FOLDER=${3:-"/config"}
-
-    PLEXDRIVE_CONFIG_FOLDER="$PLEXDRIVE_FOLDER"
+    RCLONE_CONFIG_FILE=${2:-"${rclone_config_folder}/rclone.conf"}
+    PLEXDRIVE_CONFIG_FOLDER=${3:-"${plexdrive_config_folder}"}
 
     ENV_FILE=${4:-$ENV_FILE}
 
@@ -55,5 +53,5 @@ echo "
 Setup Plexdrive using rclone remote: ${plexdrive_rclone_remote}
 ==============================================================
 "
-plexdrive_config_from_rclone "${plexdrive_rclone_remote}" "/config/rclone.conf" "/config"
+plexdrive_config_from_rclone "${plexdrive_rclone_remote}" "${rclone_config_folder}/rclone.conf" "${plexdrive_config_folder}"
 exit 0

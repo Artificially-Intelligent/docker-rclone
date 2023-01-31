@@ -40,7 +40,7 @@ while findmnt "${rclone_mountpoint}" | grep -q fuse.rclone; do
 done
 
 # permissions
-chown -R abc:abc /config /log
+chown -R abc:abc "${rclone_config_folder}" /log
 chown abc:abc /cache
 if [[ -d ${local_mountpoint} ]]; then
     echo "*** changing owner recursively for ${local_mountpoint}"

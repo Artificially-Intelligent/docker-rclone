@@ -121,7 +121,7 @@ if [[ ${MOVE_LOCAL_EXCEEDS_GB} =~ ^[0-9]+$ ]] && [[ ${MOVE_LOCAL_FREEUP_GB} =~ ^
             fileSize=$(stat "$n" -c %s)
 
             # Move file to remote destination[s], retaining path
-            rclone move --config=/config/rclone.conf "$@" "$n" "${rclone_remote_path}${destpath}" >/dev/null 2>&1
+            rclone move --config=${rclone_config_folder}/rclone.conf "$@" "$n" "${rclone_remote_path}${destpath}" >/dev/null 2>&1
             if [ $? -eq 0 ]; then
                 pSize=$((pSize + fileSize))
                 pCount=$((pCount + 1))
@@ -166,7 +166,7 @@ if [ "${MOVE_LOCAL_ALL}" == "true" ]; then
         fileSize=$(stat "$n" -c %s)
 
         # Move file to remote destination[s], retaining path
-        rclone move --config=/config/rclone.conf "$@" "$n" "${rclone_remote_path}${destpath}" >/dev/null 2>&1
+        rclone move --config=${rclone_config_folder}/rclone.conf "$@" "$n" "${rclone_remote_path}${destpath}" >/dev/null 2>&1
         if [ $? -eq 0 ]; then
             pSize=$((pSize + fileSize))
             pCount=$((pCount + 1))

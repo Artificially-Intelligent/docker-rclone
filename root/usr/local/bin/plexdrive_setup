@@ -7,9 +7,9 @@ Setup Plexdrive
 ==============================================================
 "
 
-if [ -f "/config/config.json" ] || [ -f "/config/token.json" ]; then
+if [ -f "${plexdrive_config_folder}/config.json" ] || [ -f "${plexdrive_config_folder}/token.json" ]; then
   echo "Plexdrive has already been set up."
-  echo "Try again after removing both 'config.json' and 'token.json' in /config."
+  echo "Try again after removing both 'config.json' and 'token.json' in ${plexdrive_config_folder}."
 else
   plexdrive mount $pd_mountpoint $(echo $pd_basic_opts)
 fi
