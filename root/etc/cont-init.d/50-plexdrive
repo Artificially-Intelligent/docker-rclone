@@ -4,7 +4,7 @@
 
 # plexdrive healthchecks
 if ! [ -z "$pd_mountpoint" ]; then
-    echo "*** checking config"
+    echo "*** checking plexdrive config"
     if ! [ -z "$plexdrive_rclone_remote" ]; then
         echo "Overwriting json config files in ${plexdrive_config_folder} using rclone remote: $plexdrive_rclone_remote"
         . /usr/local/bin/plexdrive_setup_from_rclone
@@ -19,7 +19,7 @@ if ! [ -z "$pd_mountpoint" ]; then
         sleep 30
     done
 
-    echo "*** checking mountpoint: ${pd_mountpoint}"
+    echo "*** checking plexdrive mountpoint: ${pd_mountpoint}"
     while findmnt "${pd_mountpoint}" | grep -q fuse; do
         echo "ERROR: mountpoint (${pd_mountpoint}) already mounted"
         fusermount -uz "${pd_mountpoint}"

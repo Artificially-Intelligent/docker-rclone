@@ -6,6 +6,8 @@ services:
     image: slink42/rclone
     restart: unless-stopped
     network_mode: "bridge"
+    ports:
+      - "5574:5574"
     volumes:
       - /mnt/user/appdata_uncached/rclone_test/config:/config
       - /mnt/user/appdata_uncached/rclone_test/log:/log
@@ -26,7 +28,7 @@ services:
       - TZ=Australia/Melbourne
       - 'RCLONE_REMOTE_PATH=secure_media_crypt_pd:'
       - 'RCLONE_MOUNT_BASIC_OPTS= --uid=${PUID:-911} --gid=${PGID:-911} --cache-dir=/cache --use-mmap --allow-other --umask=002 --rc --rc-no-auth --rc-addr=:5574 '
-      - 'RCLONE_MOUNT_USER_OPTS='
+      - 'RCLONE_MOUNT_USER_OPTS= -v --read-only --use-json-log --acd-templink-threshold 1g --buffer-size 8M --timeout 5s --contimeout 5s --stats 300s --dir-cache-time 30m --multi-thread-streams=20 --allow-non-empty --allow-other --rc-web-gui --rc-web-gui-no-open-browser --rc-user rclone --rc-pass rclone '
       - 'MERGED_DEST=/mnt/data'
       - 'PLEXDRIVE_REMOTE=secure_media'
       - 'PLEXDRIVE_MOUNT_BASIC_OPTS= --config /config/ --uid=0 --gid=0 --umask=0100775 '

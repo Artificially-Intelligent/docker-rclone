@@ -54,4 +54,3 @@ Setup Plexdrive using rclone remote: ${plexdrive_rclone_remote}
 ==============================================================
 "
 plexdrive_config_from_rclone "${plexdrive_rclone_remote}" "${rclone_config_folder}/rclone.conf" "${plexdrive_config_folder}"
-exit 0
