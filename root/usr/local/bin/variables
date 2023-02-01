@@ -11,7 +11,7 @@ local_mountpoint=${MERGED_SOURCE:-/mnt/local}
 [[ -n "${POOLING_FS:-}" ]] && rclone_mountpoint=${RCLONE_MOUNT:-"$(dirname $fuse_mountpoint)/rclone"} \
     || rclone_mountpoint=${fuse_mountpoint}
 
-rclone_mount_basic_opts="
+rclone_mount_basic_opts==${RCLONE_MOUNT_BASIC_OPTS:-"
 --uid=${PUID:-911}
 --gid=${PGID:-911}
 --cache-dir=/cache
@@ -21,7 +21,7 @@ rclone_mount_basic_opts="
 --rc
 --rc-no-auth
 --rc-addr=:5574
-"
+"}
 
 mfs_basic_opts="uid=${PUID:-911},gid=${PGID:-911},umask=022,allow_other"
 mfs_branches=${MFS_BRANCHES:-${local_mountpoint}=RW:${rclone_mountpoint}=NC}
@@ -57,12 +57,6 @@ if ([ -f "${plexdrive_config_folder}/config.json" ] && [ -f "${plexdrive_config_
                 --drive-id=${plexdrive_teamdrive_id}
             "
         fi
-    fi
-    
-    if ! [ -z "$PLEXDRIVE_MOUNT_USER_OPTS" ]; then
-        pd_basic_opts="${pd_basic_opts}
-            ${PLEXDRIVE_MOUNT_USER_OPTS}
-        "
     fi
     
 fi
