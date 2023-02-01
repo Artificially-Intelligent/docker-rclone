@@ -4,7 +4,7 @@
 
 if [ -z "$pd_mountpoint" ]; then
     echo "plexdrive not configured for use. plexdrive not started as a service"
-    sleep 3600
+    sleep 86400
 else
     IFS=" " read -r -a pd_user_opts <<< "$PLEXDRIVE_MOUNT_USER_OPTS"
 
