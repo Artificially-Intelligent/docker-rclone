@@ -99,7 +99,7 @@ Please note that variables only with capital letters are configurable by environ
 | ```RCLONE_CONFIG```  | path to ```rclone.conf```  |  ```/config/rclone.conf``` |
 | ```RCLONE_LOG_LEVEL```  | log level for rclone runtime  | ```NOTICE```  |
 | ```RCLONE_LOG_FILE```  | to redirect logging to file  |   |
-| ```RCLONE_MOUNT_BASIC_OPTS```  | basic rclone options used by default the above command | ```--uid=${PUID:-911} --gid=${PGID:-911} --cache-dir=/cache --use-mmap --allow-other --umask=002 --rc --rc-no-auth --rc-addr=:5574 ````\ |
+| ```RCLONE_MOUNT_BASIC_OPTS```  | basic rclone options used by default the above command | ```--uid=${PUID:-911} --gid=${PGID:-911} --cache-dir=/cache --use-mmap --allow-other --umask=002 --rc --rc-no-auth --rc-addr=:5574 ```\ |
 | ```RCLONE_MOUNT_USER_OPTS```  | additional arguments will be appended to the basic options in the above command  |   |
 
 ## [plexdrive](https://github.com/plexdrive/plexdrive) mount (optional)

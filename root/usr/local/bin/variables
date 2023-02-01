@@ -11,7 +11,7 @@ local_mountpoint=${MERGED_SOURCE:-/mnt/local}
 [[ -n "${POOLING_FS:-}" ]] && rclone_mountpoint=${RCLONE_MOUNT:-"$(dirname $fuse_mountpoint)/rclone"} \
     || rclone_mountpoint=${fuse_mountpoint}
 
-rclone_mount_basic_opts==${RCLONE_MOUNT_BASIC_OPTS:-"
+rclone_mount_basic_opts=${RCLONE_MOUNT_BASIC_OPTS:-"
 --uid=${PUID:-911}
 --gid=${PGID:-911}
 --cache-dir=/cache
