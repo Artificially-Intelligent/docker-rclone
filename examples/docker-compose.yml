@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  rclone:
+    container_name: rclone
+    image: slink42/rclone
+    restart: unless-stopped
+    network_mode: "bridge"
+    volumes:
+      - /mnt/user/appdata_uncached/rclone_test/config:/config
+      - /mnt/user/appdata_uncached/rclone_test/log:/log
+      - /mnt/user/appdata_uncached/rclone_test/cache:/cache
+      - /mnt/user/appdata_uncached/rclone_test/mnt:/mnt:shared
+    devices:
+      - /dev/fuse
+    cap_add:
+      - SYS_ADMIN
+    security_opt:
+      - apparmor:unconfined
+    logging:
+      options:
+        max-size: 20m
+    environment:
+      - PUID=0
+      - PGID=0
+      - TZ=Australia/Melbourne
+      - 'RCLONE_REMOTE_PATH=secure_media_crypt_pd:'
+      - 'MERGED_DEST=/mnt/data'
+      - 'PLEXDRIVE_REMOTE=secure_media'
+      - 'PLEXDRIVE_MOUNT_BASIC_OPTS= --config /config/ --uid=0 --gid=0 --umask=0100775 '
+      - 'PLEXDRIVE_MOUNT_USER_OPTS=  -o allow_other,read_only,nonempty,auto_unmount --verbosity=2 --max-chunks=10 --chunk-size=20M --chunk-check-threads=20 --chunk-load-threads=4 --chunk-load-ahead=5 '

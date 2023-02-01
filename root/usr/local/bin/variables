@@ -43,13 +43,13 @@ if ([ -f "${plexdrive_config_folder}/config.json" ] && [ -f "${plexdrive_config_
     #[[ -n "${POOLING_FS:-}" ]] && pd_mountpoint="/cloud" || pd_mountpoint="/data"
     pd_mountpoint=${PLEXDRIVE_MOUNT:-"$(dirname $fuse_mountpoint)/plexdrive"}
     
-    pd_basic_opts="
+    pd_basic_opts=${PLEXDRIVE_MOUNT_BASIC_OPTS:-"
     --config ${plexdrive_config_folder}/
     --uid=${PUID:-911}
     --gid=${PGID:-911}
     --umask=0100775
     -o allow_other
-    "
+    "}
     if [ -f "${plexdrive_config_folder}/team_drive.id" ]; then
         plexdrive_teamdrive_id=$(cat "${plexdrive_config_folder}/team_drive.id")
         if ! [ -z "${plexdrive_teamdrive_id}" ]; then

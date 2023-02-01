@@ -11,6 +11,7 @@ Docker image for [rclone](https://rclone.org/) mount, with
 ```yaml
 version: '3'
 
+
 services:
   rclone:
     container_name: rclone
@@ -128,6 +129,7 @@ Please note that variables only with capital letters are configurable by environ
 |---|---|---|
 | ```PLEXDRIVE_REMOTE```  | this should be in ```rclone.conf```. If defined token, client_id, client_secret and team_drive will be read from remote and used to overwrite any existing plexdrive config files: /config/config.json, /config/token.json and /config/team_drive.id  |   |
 | ```PLEXDRIVE_MOUNT```  | path where plexdrive remote is mounted to. | ```/mnt/plexdrive``` |
+| ```PLEXDRIVE_MOUNT_BASIC_OPTS```  | basic plexdrive options used by default the above command. | ```--config /config/ --uid=0 --gid=0 --umask=0100775 -o allow_other ``` |
 | ```PLEXDRIVE_MOUNT_USER_OPTS```  | additional arguments will be appended to the basic options in the above command  |   |
 
 ## [mergerfs](https://github.com/trapexit/mergerfs) or unionfs (optional)
