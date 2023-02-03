@@ -1,0 +1,11 @@
+#!/usr/bin/with-contenv bash
+
+rclone_remote="${1}"
+rclone_config_file=${2:-"${rclone_config_folder}/rclone.conf"}
+rclone_env_file=${3:-"${rclone_config_folder}/rclone.env"}
+rclone_env_filter=${4:-"RCLONE_CONFIG_"}
+
+parse_rclone_conf_to_env_file "${rclone_config_file}" "${rclone_env_file}" "${rclone_env_filter}"
+
+exec s6-setuidgid abc reconnect_rclone_mount.script "${rclone_remote}" "${rclone_config_file}"
+exec s6-setuidgid abc parse_rclone_conf_to_env_file "${rclone_config_file}" "${rclone_env_file}" "${rclone_env_filter}"

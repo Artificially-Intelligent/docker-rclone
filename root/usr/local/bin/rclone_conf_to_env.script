@@ -1,0 +1,24 @@
+#!/usr/bin/with-contenv bash
+. /usr/local/bin/variables
+
+# Read an rclone.conf file and output the envrionment variables that would achieve the same
+function parse_rclone_conf_to_env_file() {
+    rclone_config_file=${1:-"rclone.conf"}
+
+    while read -r line; do
+        if [[ $line =~ ^\[.*\]$ ]]; then
+            section="${line:1:${#line}-2}"
+        elif [[ $line =~ ^[^#].*=.* ]]; then
+            key="${line%%=*}"
+            value="${line#*=}"
+            env_var="${section^^}_${key^^}"
+            echo "RCLONE_CONFIG_${env_var// /}=${value// /}"
+        fi
+    done < "${rclone_config_file}"
+}
+
+rclone_config_file=${1:-"${rclone_config_folder}/rclone.conf"}
+rclone_env_file=${2:-"${rclone_config_folder}/rclone.env"}
+rclone_env_filter=${3:-"RCLONE_CONFIG_"}
+
+parse_rclone_conf_to_env_file "${rclone_config_file}" | grep "${rclone_env_filter}" > "${rclone_env_file}"

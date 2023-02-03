@@ -1,0 +1,39 @@
+#!/usr/bin/with-contenv bash
+. /usr/local/bin/variables
+
+logf() {
+    echo "$(date "$(printenv DATE_FORMAT)") RECONNECT: $1"
+}
+
+errorf() {
+    logf " ERROR: $1"
+}
+
+# Reconnect to rclone remote if unable to connect to an list directories
+function reconnect_rclone_mount() {
+    # authorize rclone gdrive mount
+    rclone_remote=$1
+    rclone_config_file=${2:-"rclone.conf"}
+
+    if [ -z "rclone_remote" ]; then
+        errorf "unable to run reconnect_rclone_mount. No rclone remote specified"
+    else
+        logf "setting up rclone authentication for remote: ${rclone_remote}"
+        if [[ -f "${rclone_config_file}" ]]; then
+            if [[ $(rclone --config  "${rclone_config_file}" lsd ${rclone_remote}) ]]; then
+                logf "rclone auth already present. Skipping mount reconnection"
+            else
+                logf "reconnecting rclone mount: ${rclone_remote}"
+                rclone config --config "${rclone_config_file}" reconnect ${rclone_remote}
+            fi
+        else
+            logf "rclone config file not found at: ${rclone_config_file}"
+        fi
+    fi
+}
+
+
+rclone_remote="${1}"
+rclone_config_file=${2:-"${rclone_config_folder}/rclone.conf"}
+
+reconnect_rclone_mount "${rclone_remote}" "${rclone_config_file}"

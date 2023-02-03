@@ -2,7 +2,8 @@
 
 ## rclone variables
 
-rclone_config_folder="/config"
+rclone_config_folder=${RCLONE_CONFIG_FOLDER:-"/config/rclone"}
+rclone_config_file="${rclone_config_folder}/rclone.conf"
 
 fuse_mountpoint=${MERGED_DEST:-/mnt/data}
 local_mountpoint=${MERGED_SOURCE:-/mnt/local}
@@ -14,6 +15,7 @@ local_mountpoint=${MERGED_SOURCE:-/mnt/local}
 rclone_mount_basic_opts=${RCLONE_MOUNT_BASIC_OPTS:-"
 --uid=${PUID:-911}
 --gid=${PGID:-911}
+--config ${rclone_config_file}/
 --cache-dir=/cache
 --use-mmap
 --allow-other
@@ -32,11 +34,13 @@ ufs_branches=${UFS_BRANCHES:-${local_mountpoint}=RW:${rclone_mountpoint}=RO}
 
 ## plexdrive variables
 
-plexdrive_config_folder="/config"
+plexdrive_config_folder=${PLEXDRIVE_CONFIG_FOLDER:-"/config/plexdrive"}
 
 # If plexdrive config is definined setup plexdrive for use, otherwise leave disabled.
 # Note: Variable pd_mountpoint is used elsewhere in code to check if plexdrive is in use. 
 if ([ -f "${plexdrive_config_folder}/config.json" ] && [ -f "${plexdrive_config_folder}/token.json" ]) || ! [ -z "$PLEXDRIVE_REMOTE" ]; then
+
+    plexdrive_config_folder=${plexdrive_config_folder:-"/config"}
 
     plexdrive_rclone_remote=${PLEXDRIVE_REMOTE:-""}
 
