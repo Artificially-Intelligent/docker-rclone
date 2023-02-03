@@ -2,8 +2,10 @@
 
 rclone_remote="${1}"
 rclone_config_file=${2:-"${rclone_config_folder}/rclone.conf"}
+# Write config to env file so it can be passed into docker using --env-file. Allows rclone.conf potentially to be kept in sync with a generic master without auth token being lost.
 rclone_env_file=${3:-"${rclone_config_folder}/rclone.env"}
-rclone_env_filter=${4:-"RCLONE_CONFIG_"}
+# By default only save token to env file.
+rclone_env_filter=${4:-"RCLONE_CONFIG_${rclone_remote}_TOKEN"}
 
 parse_rclone_conf_to_env_file "${rclone_config_file}" "${rclone_env_file}" "${rclone_env_filter}"
 
