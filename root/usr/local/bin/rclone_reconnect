@@ -1,13 +1,15 @@
 #!/usr/bin/with-contenv bash
 
-rclone_remote="${1}"
 rclone_config_file=${2:-"${rclone_config_folder}/rclone.conf"}
-# Write config to env file so it can be passed into docker using --env-file. Allows rclone.conf potentially to be kept in sync with a generic master without auth token being lost.
+
+rclone_remote=${1:-$(get_first_rclone_remote.script "drive" "${rclone_config_file}")}
+
 rclone_env_file=${3:-"${rclone_config_folder}/rclone.env"}
 # By default only save token to env file.
 rclone_env_filter=${4:-"RCLONE_CONFIG_${rclone_remote}_TOKEN"}
 
-parse_rclone_conf_to_env_file "${rclone_config_file}" "${rclone_env_file}" "${rclone_env_filter}"
-
+# Reconnect rclone mount to generate fresh auth token.
 exec s6-setuidgid abc reconnect_rclone_mount.script "${rclone_remote}" "${rclone_config_file}"
+
+# Write rclone config to env file so it can be passed into docker using --env-file. Allows rclone.conf potentially to be kept in sync with a generic master without auth token being lost.
 exec s6-setuidgid abc parse_rclone_conf_to_env_file "${rclone_config_file}" "${rclone_env_file}" "${rclone_env_filter}"
