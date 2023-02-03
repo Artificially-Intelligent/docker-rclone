@@ -1,0 +1,65 @@
+#!/usr/bin/with-contenv bash
+. /usr/local/bin/variables
+
+logf() {
+    echo "$(date "$(printenv DATE_FORMAT)") PLEXDRIVE_CONF: $1"
+}
+
+errorf() {
+    logf " ERROR: $1"
+}
+
+# Reconnect to rclone remote, revert rclone config to master copy if unable to connect
+function plexdrive_config_from_rclone(){
+    # authorize rclone gdrive mount
+    rclone_remote=$1
+    rclone_config_file=${2:-"${rclone_config_folder}/rclone.conf"}
+    plexdrive_config_folder=${3:-"${plexdrive_config_folder}"}
+
+    echo "
+==============================================================
+Setup Plexdrive using rclone remote: ${rclone_remote}
+==============================================================
+"
+
+    ## copy gdrive mount tokens to plexdrive
+    logf "copying rclone token to plexdrive"
+    mkdir -p "${plexdrive_config_folder}"
+
+    # read config from file
+    RCLONE_CONFIG_OUPUT=$(rclone config  --config "$rclone_config_file" show ${rclone_remote})
+
+    # update plexdrive token.json
+    RCLONE_TOKEN=$(echo "$RCLONE_CONFIG_OUPUT" | grep token)
+    # trim to value only
+    RCLONE_TOKEN=${RCLONE_TOKEN/token = /}
+    [[ -z "$RCLONE_TOKEN" ]] && errorf "rclone token for gdrive not found in rclone.conf" && exit 1 \
+        || echo "$RCLONE_TOKEN" > "${plexdrive_config_folder}/token.json"
+
+
+    # update plexdrive config.json
+    RCLONE_CLIENTID=$(echo "$RCLONE_CONFIG_OUPUT" | grep client_id)
+    RCLONE_CLIENTID=${RCLONE_CLIENTID/client_id = /}
+
+    RCLONE_SECRET=$(echo "$RCLONE_CONFIG_OUPUT" | grep client_secret)
+    RCLONE_SECRET=${RCLONE_SECRET/client_secret = /}
+
+    if [[ -z "$RCLONE_CLIENTID" ]] || [[ -z "$RCLONE_SECRET" ]]; then
+        errorf "rclone token for gdrive not found in rclone.conf"
+        exit 1
+    else
+        echo "{\"ClientID\":\"$RCLONE_CLIENTID\",\"ClientSecret\":\"$RCLONE_SECRET\"}" > "$plexdrive_config_folder/config.json"
+    fi
+
+    # update plexdrive team_drive.id
+    RCLONE_TEAMDRIVE=$(echo "$RCLONE_CONFIG_OUPUT" | grep team_drive)
+    RCLONE_TEAMDRIVE=${RCLONE_TEAMDRIVE/team_drive = /}
+    [[ -z "$RCLONE_TEAMDRIVE" ]] && echo "warning: rclone teamdrive id not found in rclone.conf for remote: ${rclone_remote}" \
+        || echo "$RCLONE_TEAMDRIVE" > "$plexdrive_config_folder/team_drive.id"
+}
+
+plexdrive_rclone_remote=${1:-"${plexdrive_rclone_remote}"}
+rclone_config_file=${2:-"${rclone_config_folder}/rclone.conf"}
+plexdrive_config_folder${3:-"${plexdrive_config_folder}"}
+
+plexdrive_config_from_rclone "${plexdrive_rclone_remote}" "${rclone_config_file}" "${plexdrive_config_folder}"

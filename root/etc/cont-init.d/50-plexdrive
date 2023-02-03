@@ -7,7 +7,7 @@ if ! [ -z "$pd_mountpoint" ]; then
     echo "*** checking plexdrive config"
     if ! [ -z "$plexdrive_rclone_remote" ]; then
         echo "Overwriting json config files in ${plexdrive_config_folder} using rclone remote: $plexdrive_rclone_remote"
-        . /usr/local/bin/plexdrive_setup_from_rclone
+        . /usr/local/bin/plexdrive_setup_from_rclone.script
         # Reload variables to ensure $plexdrive_teamdrive_id is populated and added to pd_basic_opts
         . /usr/local/bin/variables
     fi
