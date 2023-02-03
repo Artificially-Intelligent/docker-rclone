@@ -4,4 +4,4 @@
 remote_type=${1:-"drive"}
 rclone_config_file=${2:-"${rclone_config_folder}/rclone.conf"}
 
-rclone config --config "${rclone_config_file}" dump |  jq 'to_entries |  map(select(.value.type=="${remote_type}"))[0].key'
+rclone config --config "${rclone_config_file}" dump |  jq "to_entries |  map(select(.value.type==\"${remote_type}\"))[0].key" | tr -d '"'

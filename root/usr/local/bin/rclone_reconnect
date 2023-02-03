@@ -2,7 +2,7 @@
 
 rclone_config_file=${2:-"${rclone_config_folder}/rclone.conf"}
 
-rclone_remote=${1:-$(get_first_rclone_remote.script "drive" "${rclone_config_file}")}
+rclone_remote=${1:-:"$(get_first_rclone_remote.script "drive" "${rclone_config_file}"):"}
 
 rclone_env_file=${3:-"${rclone_config_folder}/rclone.env"}
 # By default only save token to env file.
