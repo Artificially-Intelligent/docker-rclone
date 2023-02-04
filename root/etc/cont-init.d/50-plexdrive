@@ -27,6 +27,9 @@ if ! [ -z "$pd_mountpoint" ]; then
         sleep 15
     done
 
+    # Create mount point folder if it doesn't exist yet
+    [ -d "${pd_mountpoint}" ] || mkdir -p "${pd_mountpoint}"
+
     # permissions
     chown -R abc:abc \
         "${plexdrive_config_folder}" "${pd_mountpoint}" /cache
