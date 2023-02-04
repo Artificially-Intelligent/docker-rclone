@@ -104,6 +104,7 @@ ENV \
     PS1="\u@\h:\w\\$ " \
     RCLONE_CONFIG=/config/rclone.conf \
     RCLONE_REFRESH_METHOD=default \
+    PLEXDRIVE_CONFIG_FOLDER=/config/plexdrive \
     UFS_USER_OPTS="cow,direct_io,nonempty,auto_cache,sync_read" \
     MFS_USER_OPTS="rw,use_ino,func.getattr=newest,category.action=all,category.create=ff,cache.files=auto-full,dropcacheonclose=true" \
     DATE_FORMAT="+%4Y/%m/%d %H:%M:%S"

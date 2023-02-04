@@ -35,6 +35,7 @@ ufs_branches=${UFS_BRANCHES:-${local_mountpoint}=RW:${rclone_mountpoint}=RO}
 
 ## plexdrive variables
 
+# PLEXDRIVE_CONFIG_FOLDER default value is /config/plexdrive
 plexdrive_config_folder=${PLEXDRIVE_CONFIG_FOLDER:-"/config/plexdrive"}
 
 # If plexdrive config is definined setup plexdrive for use, otherwise leave disabled.
