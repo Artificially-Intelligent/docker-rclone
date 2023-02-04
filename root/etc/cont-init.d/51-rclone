@@ -39,9 +39,13 @@ while findmnt "${rclone_mountpoint}" | grep -q fuse.rclone; do
     sleep 30s
 done
 
+
+# Create mount point folder if it doesn't exist yet
+[ -d "${rclone_mountpoint}" ] || mkdir -p "${rclone_mountpoint}"
+
 # permissions
 chown -R abc:abc "${rclone_config_folder}" /log
-chown abc:abc /cache
+chown abc:abc /cache "${rclone_mountpoint}"
 if [[ -d ${local_mountpoint} ]]; then
     echo "*** changing owner recursively for ${local_mountpoint}"
     chown abc:abc "${local_mountpoint}"
