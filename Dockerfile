@@ -102,7 +102,7 @@ ENV \
     S6_KILL_GRACETIME=5000 \
     LANG=C.UTF-8 \
     PS1="\u@\h:\w\\$ " \
-    RCLONE_CONFIG=/config/rclone/rclone.conf \
+    RCLONE_CONFIG=/config/rclone.conf \
     RCLONE_REFRESH_METHOD=default \
     UFS_USER_OPTS="cow,direct_io,nonempty,auto_cache,sync_read" \
     MFS_USER_OPTS="rw,use_ino,func.getattr=newest,category.action=all,category.create=ff,cache.files=auto-full,dropcacheonclose=true" \

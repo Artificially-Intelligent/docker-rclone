@@ -2,7 +2,7 @@
 
 ## rclone variables
 
-# RCLONE_CONFIG default value is /config/rclone/rclone.conf
+# RCLONE_CONFIG default value is /config/rclone.conf
 rclone_config_file="${RCLONE_CONFIG}"
 rclone_config_folder=$(dirname "${rclone_config_file}")
 
@@ -40,8 +40,6 @@ plexdrive_config_folder=${PLEXDRIVE_CONFIG_FOLDER:-"/config/plexdrive"}
 # If plexdrive config is definined setup plexdrive for use, otherwise leave disabled.
 # Note: Variable pd_mountpoint is used elsewhere in code to check if plexdrive is in use. 
 if ([ -f "${plexdrive_config_folder}/config.json" ] && [ -f "${plexdrive_config_folder}/token.json" ]) || ! [ -z "$PLEXDRIVE_REMOTE" ]; then
-
-    plexdrive_config_folder=${plexdrive_config_folder:-"/config"}
 
     plexdrive_rclone_remote=${PLEXDRIVE_REMOTE:-""}
 
