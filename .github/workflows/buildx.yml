@@ -15,7 +15,7 @@ env:
 
 jobs:
   buildx:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.event_name != 'pull_request'
     strategy:
       matrix:
@@ -49,7 +49,7 @@ jobs:
       -
         name: Initial Buildx
         if: env.X_SKIP == 'false'
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: Dockerfile
@@ -94,7 +94,7 @@ jobs:
       -
         name: Buildx and Push
         if: env.X_SKIP == 'false'
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: Dockerfile
@@ -126,7 +126,7 @@ jobs:
           status: ${{ job.status }} # do not modify this line
 
   buildx-on-pr:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: github.event_name == 'pull_request'
     strategy:
       matrix:
@@ -160,7 +160,7 @@ jobs:
       -
         name: Initial Buildx
         if: env.X_SKIP == 'false'
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: Dockerfile
@@ -186,7 +186,7 @@ jobs:
       -
         name: Buildx and Push
         if: env.X_SKIP == 'false' && github.actor == github.event.repository.owner.login
-        uses: docker/build-push-action@v3
+        uses: docker/build-push-action@v4
         with:
           context: .
           file: Dockerfile
