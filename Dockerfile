@@ -1,7 +1,7 @@
 ARG UBUNTU_VER=20.04
 
 ## Use hard coded ubuntu version when build failing failures due to upstream dependency changes
-ARG UBUNTU_VER_SHA=@sha256:6cad3b09aa963b47380bbf0053980f22d27bb4b575ff5b171bb9c00a239ad018
+ARG UBUNTU_VER_SHA=@sha256:e875cc8543fcf9e190ab8de4b09d208aed8788ad2fd3fe3d1078856a97b713e4
 FROM ubuntu:${UBUNTU_VER} AS ubuntu
 FROM ghcr.io/by275/base:ubuntu${UBUNTU_VER}${UBUNTU_VER_SHA} AS prebuilt
 
@@ -76,6 +76,7 @@ RUN \
         openssl \
         tzdata \
         unionfs-fuse \
+        fuse3 \
         wget && \
     update-ca-certificates && \
     sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf && \
