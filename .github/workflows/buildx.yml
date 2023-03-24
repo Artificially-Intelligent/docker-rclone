@@ -72,6 +72,7 @@ jobs:
           echo "testing container id: $CID"
           VER=$(docker exec $CID rclone version | head -n1 | cut -f2 -d'v')
           echo "rclone version: $VER"
+          [ -z "${VER}" "] && VER=$(curl -fsS https://downloads.rclone.org/version.txt) && echo "unable to parse rcloen version from container. Assuming latest rclone version: $VER"
           docker rm -f $CID
           echo "APP_VER=$VER" >> $GITHUB_ENV
           echo ::set-output name=github_desc::$(curl -sX GET https://api.github.com/repos/${GITHUB_REPOSITORY} | jq -r .description)
