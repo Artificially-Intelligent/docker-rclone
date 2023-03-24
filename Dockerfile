@@ -70,13 +70,12 @@ RUN \
     apt-get install -yq --no-install-recommends \
         bc \
         ca-certificates \
-        fuse \
+        fuse3 \
         jq \
         lsof \
         openssl \
         tzdata \
         unionfs-fuse \
-        fuse3 \
         wget && \
     update-ca-certificates && \
     sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf && \
