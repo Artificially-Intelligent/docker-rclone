@@ -79,7 +79,7 @@ RUN \
 # RELEASE
 # 
 FROM base
-LABEL maintainer="slink42"
+LABEL maintainer="wiserain"
 LABEL org.opencontainers.image.source https://github.com/wiserain/docker-rclone
 
 ARG DEBIAN_FRONTEND="noninteractive"
@@ -100,14 +100,19 @@ RUN \
         openssl \
         tzdata \
         unionfs-fuse \
-        wget && \
-    sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf && \
+        wget \
+        curl && \
+        sed -i 's/#user_allow_other/user_allow_other/' /etc/fuse.conf
+
+RUN \
     echo "**** add mergerfs ****" && \
     MFS_VERSION=$(curl -fsL "https://api.github.com/repos/trapexit/mergerfs/releases/latest" | awk '/tag_name/{print $4;exit}' FS='[""]') && \
     CODENAME=$(. /etc/os-release && echo $VERSION_CODENAME) && \
     MFS_DEB="mergerfs_${MFS_VERSION}.ubuntu-${CODENAME}_$(dpkg --print-architecture).deb" && \
     cd $(mktemp -d) && curl -LJO "https://github.com/trapexit/mergerfs/releases/download/${MFS_VERSION}/${MFS_DEB}" && \
-    dpkg -i ${MFS_DEB} && \
+    dpkg -i ${MFS_DEB}
+
+RUN \
     echo "**** cleanup ****" && \
     rm -rf \
         /tmp/* \
@@ -128,7 +133,6 @@ ENV \
     RCLONE_REFRESH_METHOD=default \
     RCLONE_REFRESH_BRACE_EXPANSION=0 \
     RCLONE_REFRESH_ON_MOUNT_REPEAT=1 \
-    PLEXDRIVE_CONFIG_FOLDER=/config/plexdrive \
     UFS_USER_OPTS="cow,direct_io,nonempty,auto_cache,sync_read" \
     MFS_USER_OPTS="rw,use_ino,func.getattr=newest,category.action=all,category.create=ff,cache.files=auto-full,dropcacheonclose=true" \
     DATE_FORMAT="+%4Y/%m/%d %H:%M:%S"
