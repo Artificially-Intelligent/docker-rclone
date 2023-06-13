@@ -84,8 +84,8 @@ RUN \
 # RELEASE
 # 
 FROM base
-LABEL maintainer="wiserain"
-LABEL org.opencontainers.image.source https://github.com/wiserain/docker-rclone
+LABEL maintainer="slink42"
+LABEL org.opencontainers.image.source https://github.com/slink42/docker-rclone
 
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG APT_MIRROR="archive.ubuntu.com"
