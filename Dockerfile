@@ -11,6 +11,8 @@ FROM base AS rclone
 ARG RCLONE_TYPE="latest"
 ARG DEBIAN_FRONTEND="noninteractive"
 ARG APT_MIRROR="archive.ubuntu.com"
+ARG TARGETARCH
+ARG PLEXDRIVE_VER="5.2.1"
 
 RUN \
     echo "**** apt source change for local build ****" && \
@@ -23,7 +25,10 @@ RUN \
         rclone_install_script_url="https://rclone.org/install.sh"; \
     elif [ "${RCLONE_TYPE}" = "mod" ]; then \
         rclone_install_script_url="https://raw.githubusercontent.com/wiserain/rclone/mod/install.sh"; fi && \
-    curl -fsSL $rclone_install_script_url | bash
+    curl -fsSL $rclone_install_script_url | bash && \
+    echo "**** add plexdrive ****" && \
+    PLEXDRIVE_ARCH=$(if [ "$TARGETARCH" = "arm" ]; then echo "arm7"; else echo "$TARGETARCH"; fi) && \
+    curl -o /bar/usr/local/bin/plexdrive -LJ https://github.com/plexdrive/plexdrive/releases/download/${PLEXDRIVE_VER}/plexdrive-linux-${PLEXDRIVE_ARCH}
 
 # 
 # COLLECT
