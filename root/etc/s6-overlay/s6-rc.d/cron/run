@@ -14,6 +14,12 @@ if [[ -n "${MOVE_LOCAL_CRON:-}" ]]; then
     sleep 2
 fi
 
+if [[ -n "${COMMAND_CRON:-}" ]] && [[ -n "${COMMAND_CRON_COMMAND:-}" ]] ; then
+    echo "*** scheduling job: $COMMAND_CRON_COMMAND"
+    go-cron "$COMMAND_CRON" "$COMMAND_CRON_COMMAND" &
+    sleep 2
+fi
+
 # any ENVs starting with RCLONE_REFRESH_CRON
 for cron in "${!RCLONE_REFRESH_CRON@}"; do
     dirs="RCLONE_REFRESH_DIRS${cron//RCLONE_REFRESH_CRON/}"
