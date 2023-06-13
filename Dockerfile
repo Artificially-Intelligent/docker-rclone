@@ -28,7 +28,7 @@ RUN \
     curl -fsSL $rclone_install_script_url | bash && \
     PLEXDRIVE_ARCH=$(if [ "$TARGETARCH" = "arm" ]; then echo "arm7"; else echo "$TARGETARCH"; fi) && \
     echo "**** add plexdrive ${PLEXDRIVE_ARCH} ${PLEXDRIVE_VER} ****" && \
-    curl -o /usr/local/bin/plexdrive -LJ https://github.com/plexdrive/plexdrive/releases/download/${PLEXDRIVE_VER}/plexdrive-linux-${PLEXDRIVE_ARCH}
+    curl -o /usr/bin/plexdrive -LJ https://github.com/plexdrive/plexdrive/releases/download/${PLEXDRIVE_VER}/plexdrive-linux-${PLEXDRIVE_ARCH}
 
 # 
 # COLLECT
@@ -46,6 +46,9 @@ COPY --from=prebuilt /go/bin/go-cron /bar/usr/local/bin/
 
 # add rclone
 COPY --from=rclone /usr/bin/rclone /bar/usr/bin/
+
+# add plexdrive
+COPY --from=rclone /usr/bin/plexdrive /bar/usr/bin/
 
 # add local files
 COPY root/ /bar/
