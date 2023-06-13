@@ -26,9 +26,9 @@ RUN \
     elif [ "${RCLONE_TYPE}" = "mod" ]; then \
         rclone_install_script_url="https://raw.githubusercontent.com/wiserain/rclone/mod/install.sh"; fi && \
     curl -fsSL $rclone_install_script_url | bash && \
-    echo "**** add plexdrive ****" && \
     PLEXDRIVE_ARCH=$(if [ "$TARGETARCH" = "arm" ]; then echo "arm7"; else echo "$TARGETARCH"; fi) && \
-    curl -o /bar/usr/local/bin/plexdrive -LJ https://github.com/plexdrive/plexdrive/releases/download/${PLEXDRIVE_VER}/plexdrive-linux-${PLEXDRIVE_ARCH}
+    echo "**** add plexdrive ${PLEXDRIVE_ARCH} ${PLEXDRIVE_VER} ****" && \
+    curl -o /usr/local/bin/plexdrive -LJ https://github.com/plexdrive/plexdrive/releases/download/${PLEXDRIVE_VER}/plexdrive-linux-${PLEXDRIVE_ARCH}
 
 # 
 # COLLECT
