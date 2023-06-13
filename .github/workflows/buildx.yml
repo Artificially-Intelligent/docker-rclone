@@ -75,8 +75,8 @@ jobs:
           echo "rclone version: $VER"
           [ -z "${VER}" ] && VER=$(curl -fsS https://downloads.rclone.org/version.txt) && echo "unable to parse rcloen version from container. Assuming latest rclone version: $VER"
           docker rm -f $CID
-          [[ $GITHUB_EVENT_NAME != "master" ]] && echo "APP_VER=${{ env.BRANCH }}" >> $GITHUB_ENV
-          [[ $GITHUB_EVENT_NAME == "master" ]] && echo "APP_VER=$VER" >> $GITHUB_ENV
+          echo "APP_VER=$VER" >> $GITHUB_ENV
+          ([[ ${{ env.BRANCH }} != "master" ]] && echo "RCLONE_TYPE=dev" >> $GITHUB_ENV) || echo "RCLONE_TYPE=${{ matrix.rclone-type }}" >> $GITHUB_ENV
           echo ::set-output name=github_desc::$(curl -sX GET https://api.github.com/repos/${GITHUB_REPOSITORY} | jq -r .description)
       -
         name: Login to docker.io
@@ -101,9 +101,9 @@ jobs:
           context: .
           file: Dockerfile
           tags: |
-            ${{ env.IMAGE_NAME }}:${{ matrix.rclone-type }}
+            ${{ env.IMAGE_NAME }}:${{ env.RCLONE_TYPE }}
             ${{ env.IMAGE_NAME }}:${{ env.APP_VER }}
-            ghcr.io/${{ env.IMAGE_NAME }}:${{ matrix.rclone-type }}
+            ghcr.io/${{ env.IMAGE_NAME }}:${{ env.RCLONE_TYPE }}
             ghcr.io/${{ env.IMAGE_NAME }}:${{ env.APP_VER }}
           platforms: linux/amd64,linux/arm/v7,linux/arm64
           build-args: |
