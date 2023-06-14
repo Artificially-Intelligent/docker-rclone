@@ -80,4 +80,4 @@ rclone_cron_command_opts=${rclone_cron_command_opts#rclone}
 # Create rclone mount
 IFS=" " read -r -a rclone_command_opts <<< "$rclone_cron_command_opts"
 
-rclone_cron_command="rclone $(echo $rclone_command_opts)"
+rclone_cron_command="rclone ${rclone_command_opts[@]}"
