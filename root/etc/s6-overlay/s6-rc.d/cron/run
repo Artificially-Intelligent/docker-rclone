@@ -2,9 +2,9 @@
 
 #s6-svwait -U /var/run/service/rclone
 
-if [[ -n "${COMMAND_CRON:-}" ]] && [[ -n "${COMMAND_CRON_COMMAND:-}" ]] ; then
-    echo "*** scheduling job: $COMMAND_CRON_COMMAND"
-    go-cron "$COMMAND_CRON" "$COMMAND_CRON_COMMAND" &
+if [[ -n "${rclone_cron:-}" ]] && [[ -n "${rclone_cron_command:-}" ]] ; then
+    echo "*** scheduling cron job: ${rclone_cron} - ${rclone_cron_command}"
+    go-cron "$rclone_cron" "$rclone_cron_command" &
     sleep 2
 fi
 

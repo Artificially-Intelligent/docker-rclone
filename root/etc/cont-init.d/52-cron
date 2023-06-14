@@ -1,9 +1,9 @@
 #!/usr/bin/with-contenv bash
 . /usr/local/bin/variables
 
-if [[ -n ${COMMAND_CRON} ]] && [[ -n ${COMMAND_CRON_COMMAND} ]] && [[ -n ${COMMAND_CRON_RUN_IMMEDIATLY} ]]; then
+if [[ -n ${rclone_cron} ]] && [[ -n ${rclone_cron_command} ]] && [[ -n ${COMMAND_CRON_RUN_IMMEDIATLY} ]]; then
     echo "*** COMMAND_CRON and COMMAND_CRON_COMMAND supplied. Initiating first run immediatly.."
-    exec s6-setuidgid abc ${COMMAND_CRON_COMMAND}
+    exec s6-setuidgid abc ${rclone_cron_command}
 else
     echo "*** COMMAND_CRON and COMMAND_CRON_COMMAND supplied without COMMAND_CRON_RUN_IMMEDIATLY. Waiting until cron schedule to run: ${COMMAND_CRON}"
 fi
