@@ -70,6 +70,9 @@ if ([ -f "${plexdrive_config_folder}/config.json" ] && [ -f "${plexdrive_config_
     fi
 fi
 
-Initialse cron command variables
-[[ -n "${COMMAND_CRON_COMMAND:-}" ]] && rclone_cron_command="rclone ${COMMAND_CRON_COMMAND}"
+# Initialse rclone cron command variables
 [[ -n "${COMMAND_CRON:-}" ]] && rclone_cron="${COMMAND_CRON}"
+
+[[ -n "${COMMAND_CRON_COMMAND:-}" ]] && rclone_cron_command="${COMMAND_CRON_COMMAND}"
+# make sure command starts with rclone
+[[ ! $rclone_cron_command == rclone* ]] && rclone_cron_command="rclone$rclone_cron_command"
