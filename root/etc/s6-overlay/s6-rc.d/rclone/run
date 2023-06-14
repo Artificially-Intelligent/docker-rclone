@@ -1,14 +1,9 @@
 #!/usr/bin/with-contenv bash
 . /usr/local/bin/variables
 
-if [ -n "${rclone_command}" ]; then
-    # Running command of repeat with sleep interval
-    echo "*** running => ${rclone_command}"
-    exec s6-notifyoncheck -d -n 0 -s 3000 \
-        s6-setuidgid abc ${rclone_command}
-    echo "*** finished => ${rclone_command}"
-    echo "*** sleeing for ${sleep_delay}"
-    sleep ${sleep_delay}
+if [[ -z $RCLONE_REMOTE_PATH ]]; then
+    echo "rclone mount not configured for use. rclone not started as a service"
+    exec wait
 else
     # Create rclone mount
     IFS=" " read -r -a rclone_mount_user_opts <<< "$RCLONE_MOUNT_USER_OPTS"
