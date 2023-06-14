@@ -2,7 +2,7 @@
 . /usr/local/bin/variables
 
 # rclone healthchecks
-if [ $(findmnt ${rclone_mountpoint} | grep fuse.rclone | wc -l) -ne 1 ]; then
+if [ $(findmnt ${rclone_mountpoint} | grep fuse.rclone | wc -l) -ne 1 ] && [[ -n $RCLONE_REMOTE_PATH ]]; then
     echo "mount ${rclone_mountpoint} should only appear once but was found $(findmnt ${rclone_mountpoint} | grep fuse.rclone | wc -l) instead"
     exit 1
 fi
