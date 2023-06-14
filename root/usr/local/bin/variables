@@ -73,11 +73,10 @@ fi
 # Initialse rclone cron command variables
 [[ -n "${COMMAND_CRON:-}" ]] && rclone_cron="${COMMAND_CRON}"
 
-[[ -n "${COMMAND_CRON_COMMAND:-}" ]] && rclone_cron_command_opts="${COMMAND_CRON_COMMAND}"
 # make sure command doesn't start with rclone. Should be command options only
-rclone_cron_command_opts=${rclone_cron_command_opts#rclone}
+rclone_cron_command_opts=${COMMAND_CRON_COMMAND#rclone}
 
 # Create rclone mount
-IFS=" " read -r -a rclone_command_opts <<< "$rclone_cron_command_opts"
+IFS=" " read -r -a rclone_command_opts <<< ${rclone_cron_command_opts}
 
 rclone_cron_command="rclone ${rclone_command_opts[@]}"
