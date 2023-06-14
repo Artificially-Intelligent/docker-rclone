@@ -4,8 +4,13 @@
 sleep 10
 
 if [[ -z $RCLONE_REMOTE_PATH ]]; then
-    echo "*** RCLONE_REMOTE_PATH not set. Exiting..."
-    exit 1
+    if [[ -n $COMMAND_CRON ]] && [[ -n $COMMAND_CRON_COMMAND ]]; then
+        echo "*** COMMAND_CRON and COMMAND_CRON_COMMAND. Setting up container to run cron task instead of mount..."
+        exit 0
+    else
+        echo "*** RCLONE_REMOTE_PATH not set. Exiting..."
+        exit 1
+    fi
 fi
 
 if [[ ! "${RCLONE_REMOTE_PATH}" == :* ]]; then

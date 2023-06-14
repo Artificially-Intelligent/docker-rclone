@@ -1,0 +1,9 @@
+#!/usr/bin/with-contenv bash
+. /usr/local/bin/variables
+
+if [[ -n $COMMAND_CRON ]] && [[ -n $COMMAND_CRON_COMMAND ]]; then
+    echo "*** COMMAND_CRON and COMMAND_CRON_COMMAND supplied. Initiating first run immediatly.."
+    s6-setuidgid abc "$COMMAND_CRON_COMMAND"
+fi
+
+exit 0
