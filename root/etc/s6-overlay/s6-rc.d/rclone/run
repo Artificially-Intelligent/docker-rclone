@@ -3,6 +3,7 @@
 
 if [[ -z $RCLONE_REMOTE_PATH ]]; then
     echo "rclone mount not configured for use. rclone not started as a service"
+    sleep ${sleep_delay}
     exec wait
 else
     # Create rclone mount
