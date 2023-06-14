@@ -3,7 +3,7 @@
 
 if [[ -n ${rclone_cron} ]] && [[ -n ${rclone_cron_command} ]] && [[ -n ${COMMAND_CRON_RUN_IMMEDIATLY} ]]; then
     echo "*** COMMAND_CRON and COMMAND_CRON_COMMAND supplied. Initiating first run immediatly: ${rclone_cron_command}"
-    exec s6-setuidgid abc ${rclone_cron_command}
+    exec s6-setuidgid abc "${rclone_cron_command}"
 else
     echo "*** COMMAND_CRON and COMMAND_CRON_COMMAND supplied without COMMAND_CRON_RUN_IMMEDIATLY. Waiting until cron schedule to run: ${rclone_cron_command}"
 fi
